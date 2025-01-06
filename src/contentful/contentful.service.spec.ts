@@ -4,6 +4,7 @@ import { SyncState } from '../sync/entities/sync-state.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios from 'axios';
+import { Logger } from '@nestjs/common';
 
 jest.mock('axios');
 
@@ -146,8 +147,19 @@ describe('ContentfulService', () => {
     });
 
     it('should return null if the URL is invalid', () => {
+      const loggerErrorMock = jest.fn();
+      jest.spyOn(Logger, 'error').mockImplementation(loggerErrorMock);
+
       const syncToken = contentfulService.extractSyncToken('invalid-url');
       expect(syncToken).toBeNull();
+      expect(loggerErrorMock).toHaveBeenCalledWith(
+        'Failed to extract sync token:',
+        expect.objectContaining({
+          message: expect.stringContaining('Invalid URL'),
+        }),
+      );
+
+      jest.restoreAllMocks();
     });
   });
 

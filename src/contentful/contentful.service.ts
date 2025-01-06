@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SyncState } from '../sync/entities/sync-state.entity';
@@ -83,8 +83,7 @@ export class ContentfulService {
       const url = new URL(nextSyncUrl);
       return url.searchParams.get('sync_token');
     } catch (error) {
-      console.error('Failed to extract sync token:', error);
-
+      Logger.error('Failed to extract sync token:', error);
       return null;
     }
   }

@@ -1,4 +1,4 @@
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ContentfulService } from '../contentful/contentful.service';
 import { ProductService } from '../products/products.service';
 import { Cron } from '@nestjs/schedule';
@@ -15,10 +15,10 @@ export class SyncService implements OnApplicationBootstrap {
     const isFirstSync = !(await this.productService.isInitialSyncCompleted());
 
     if (isFirstSync) {
-      console.log('Performing initial sync...');
+      Logger.log('Performing initial sync...');
       await this.performSync(true);
     } else {
-      console.log('Performing incremental sync...');
+      Logger.log('Performing incremental sync...');
       await this.performSync(false);
     }
   }
@@ -38,7 +38,7 @@ export class SyncService implements OnApplicationBootstrap {
       const { items, nextPageUrl, nextSyncUrl } = response;
 
       if (items.length === 0) {
-        console.log('No more items to sync. Exiting loop.');
+        Logger.log('No more items to sync. Exiting loop.');
         break;
       }
 
