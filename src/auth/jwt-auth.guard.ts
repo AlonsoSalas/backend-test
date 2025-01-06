@@ -33,7 +33,7 @@ export class JwtAuthGuard implements CanActivate {
   }
 
   private extractTokenFromHeader(request: Request): string | null {
-    const authHeader = request.headers.authorization;
+    const authHeader = request.headers?.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return null;
     }

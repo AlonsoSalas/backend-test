@@ -4,9 +4,9 @@ import { ProductsModule } from '../products/products.module';
 import { ContentfulModule } from '../contentful/contentful.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from '../products/entities/products.entity';
-import { ContentfulService } from 'src/contentful/contentful.service';
-import { ProductService } from 'src/products/products.service';
-import { SyncState } from 'src/sync/entities/sync-state.entity';
+import { ContentfulService } from '../contentful/contentful.service';
+import { ProductService } from '../products/products.service';
+import { SyncState } from '../sync/entities/sync-state.entity';
 
 @Module({
   imports: [

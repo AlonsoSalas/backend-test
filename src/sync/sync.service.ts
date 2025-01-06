@@ -1,6 +1,6 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { ContentfulService } from '../contentful/contentful.service';
-import { ProductService } from 'src/products/products.service';
+import { ProductService } from '../products/products.service';
 import { Cron } from '@nestjs/schedule';
 
 @Injectable()
