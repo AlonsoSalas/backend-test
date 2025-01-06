@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 
 @Controller('reports')
@@ -23,14 +23,25 @@ export class ReportsController {
 
   @Get('date-range')
   async getProductsInDateRange(
-    @Query('startDate') startDate: string,
-    @Query('endDate') endDate: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
   ): Promise<any> {
-    const products = await this.reportsService.getProductsInDateRange(
-      startDate,
-      endDate,
-    );
-    return products;
+    if (!startDate || !endDate) {
+      throw new BadRequestException(
+        'startDate and endDate query parameters are required.',
+      );
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      throw new BadRequestException(
+        'Invalid date format. Use ISO 8601 format (YYYY-MM-DD).',
+      );
+    }
+
+    return this.reportsService.getProductsInDateRange(startDate, endDate);
   }
 
   @Get('top-5-most-expensive')
