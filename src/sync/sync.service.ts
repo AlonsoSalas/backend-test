@@ -42,9 +42,7 @@ export class SyncService implements OnApplicationBootstrap {
         break;
       }
 
-      const products = this.contentfulService.transformResponse(
-        items.newEntries || items,
-      );
+      const products = this.contentfulService.transformResponse(items);
       const deletedEntries =
         items
           .filter((item) => item.type === 'DeletedEntry')

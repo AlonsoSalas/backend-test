@@ -4,7 +4,6 @@ import { SyncState } from '../sync/entities/sync-state.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios from 'axios';
-import { Logger } from '@nestjs/common';
 
 jest.mock('axios');
 
@@ -63,36 +62,6 @@ describe('ContentfulService', () => {
     });
   });
 
-  describe('fetchNewEntries', () => {
-    it('should throw an error if no sync token is found', async () => {
-      syncStateRepository.find = jest.fn().mockResolvedValue([]);
-      await expect(contentfulService.fetchNewEntries()).rejects.toThrow(
-        'Sync token not found. Perform an initial sync first.',
-      );
-    });
-
-    it('should fetch new entries and return them', async () => {
-      const mockItems = [
-        {
-          sys: { id: '1' },
-          fields: { productName: { 'en-US': 'Test Product' } },
-        },
-      ];
-      axios.get = jest.fn().mockResolvedValue({
-        data: { nextSyncToken: 'next-token', items: mockItems },
-      });
-
-      const items = await contentfulService.fetchNewEntries();
-      expect(axios.get).toHaveBeenCalledWith(contentfulService['baseUrl'], {
-        params: {
-          access_token: contentfulService['accessToken'],
-          sync_token: 'mock-sync-token',
-        },
-      });
-      expect(items).toEqual(mockItems);
-    });
-  });
-
   describe('transformResponse', () => {
     it('should transform the response items into ProductDTOs', () => {
       const mockItems = [
@@ -135,31 +104,6 @@ describe('ContentfulService', () => {
           updatedAt: expect.any(String),
         },
       ]);
-    });
-  });
-
-  describe('extractSyncToken', () => {
-    it('should extract the sync token from the next sync URL', () => {
-      const syncToken = contentfulService.extractSyncToken(
-        'https://cdn.contentful.com/sync?sync_token=mock-token',
-      );
-      expect(syncToken).toBe('mock-token');
-    });
-
-    it('should return null if the URL is invalid', () => {
-      const loggerErrorMock = jest.fn();
-      jest.spyOn(Logger, 'error').mockImplementation(loggerErrorMock);
-
-      const syncToken = contentfulService.extractSyncToken('invalid-url');
-      expect(syncToken).toBeNull();
-      expect(loggerErrorMock).toHaveBeenCalledWith(
-        'Failed to extract sync token:',
-        expect.objectContaining({
-          message: expect.stringContaining('Invalid URL'),
-        }),
-      );
-
-      jest.restoreAllMocks();
     });
   });
 

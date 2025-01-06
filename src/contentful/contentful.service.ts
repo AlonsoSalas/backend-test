@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SyncState } from '../sync/entities/sync-state.entity';
@@ -36,26 +36,6 @@ export class ContentfulService {
     }
   }
 
-  async fetchNewEntries() {
-    const syncToken = await this.getSyncUrl();
-
-    if (!syncToken) {
-      throw new Error('Sync token not found. Perform an initial sync first.');
-    }
-
-    const response = await axios.get(this.baseUrl, {
-      params: {
-        access_token: this.accessToken,
-        sync_token: syncToken,
-      },
-    });
-
-    const { nextSyncToken, items } = response.data;
-    await this.saveOrUpdateSyncUrl(nextSyncToken);
-
-    return items;
-  }
-
   transformResponse(items: any[]): ProductDTO[] {
     return items.map((item) => {
       return {
@@ -76,16 +56,6 @@ export class ContentfulService {
         updatedAt: new Date(item.sys.updatedAt).toISOString(),
       };
     });
-  }
-
-  extractSyncToken(nextSyncUrl: string): string | null {
-    try {
-      const url = new URL(nextSyncUrl);
-      return url.searchParams.get('sync_token');
-    } catch (error) {
-      Logger.error('Failed to extract sync token:', error);
-      return null;
-    }
   }
 
   async fetchFromContentful(url: string): Promise<any> {
