@@ -18,9 +18,9 @@ import { ScheduleModule } from '@nestjs/schedule';
       type: 'postgres',
       host: process.env.DATABASE_HOST || 'localhost',
       port: +process.env.DATABASE_PORT || 5432,
-      username: process.env.DATABASE_USER || 'postgres',
-      password: process.env.DATABASE_PASSWORD || 'postgres',
-      database: process.env.DATABASE_NAME || 'backend_test_nest',
+      username: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
 
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
@@ -32,11 +32,5 @@ import { ScheduleModule } from '@nestjs/schedule';
     SyncModule,
     AuthModule,
   ],
-  // providers: [
-  //   {
-  //     provide: APP_GUARD,
-  //     useClass: JwtAuthGuard,
-  //   },
-  // ],
 })
 export class AppModule {}
