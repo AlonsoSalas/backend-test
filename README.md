@@ -1,6 +1,6 @@
 ## Project Overview
 
-This project provides a solution to a backend challenge using Node.js (version 22.12.0), NestJS, PostgreSQL, and Docker. It implements a small API that interacts with the Contentful API to fetch 'Product' entries every hour, store them in a database, and provide endpoints for both public and private modules.
+This project provides a solution to a backend challenge using Node.js (version 22.12.0), NestJS, PostgreSQL, and Docker. It implements a small API that interacts with the [Contentful API](https://www.contentful.com/developers/docs/references/content-delivery-api/) to fetch 'Product' entries every hour, store them in a database, and provide endpoints for both public and private modules.
 
 ### Challenge Description
 
