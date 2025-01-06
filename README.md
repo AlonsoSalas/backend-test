@@ -103,11 +103,16 @@ npm run test
 
 ### Private Module (Requires JWT)
 
-- **GET `/api/reports/deleted-products`**: Report showing the percentage of deleted products.
-- **GET `/api/reports/non-deleted-products`**: Report showing the percentage of non-deleted products with filtering options (e.g., with price, custom date range).
-- **GET `/api/reports/custom`**: A custom report of your choice.
+- **GET `/api/reports/deleted-percentage`**: Report to get percentage of deleted products.
+- **GET `/api/reports/deleted-percentage`**: Report showing the percentage of non-deleted products.
+- **GET `/api/reports/date-range`**: Report showing products created withing a specific date range.
+- **GET `/api/reports/top-5-most-expensive`**: Get the top 5 most expensive products
 
 **Authentication**: To access the private module, provide a valid JWT token in the request headers.
+
+The JWT can be obtained in this endpoint
+
+- **POST `/api/auth/generate-token`**: Which receives a body with `username` prop.
 
 ---
 
