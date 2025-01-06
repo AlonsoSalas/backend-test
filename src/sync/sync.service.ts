@@ -16,48 +16,22 @@ export class SyncService implements OnApplicationBootstrap {
 
     if (isFirstSync) {
       console.log('Performing initial sync...');
-      await this.performInitialSync();
+      await this.performSync(true);
     } else {
       console.log('Performing incremental sync...');
-
-      await this.performIncrementalSync();
+      await this.performSync(false);
     }
   }
 
-  async performInitialSync() {
-    let url = await this.contentfulService.getInitialSyncUrl();
+  private async performSync(isInitial: boolean) {
+    let url = isInitial
+      ? await this.contentfulService.getInitialSyncUrl()
+      : await this.contentfulService.getSyncUrl();
 
-    while (url) {
-      const response = await this.contentfulService.fetchFromContentful(url);
-
-      const { items, nextPageUrl, nextSyncUrl } = response;
-
-      if (items.length === 0) {
-        console.log('No more items to sync. Exiting loop.');
-        break;
-      }
-
-      const products = this.contentfulService.transformResponse(items);
-
-      await this.productService.upsertProducts(products);
-
-      url = nextPageUrl || nextSyncUrl || null;
-
-      if (!nextPageUrl && nextSyncUrl) {
-        await this.contentfulService.saveOrUpdateSyncUrl(nextSyncUrl);
-      }
-    }
-  }
-
-  async performIncrementalSync() {
-    const nextSyncUrl = await this.contentfulService.getSyncUrl();
-
-    if (!nextSyncUrl) {
+    if (!url && !isInitial) {
       console.warn('No nextSyncUrl found. Triggering an initial sync.');
-      return this.performInitialSync();
+      return this.performSync(true);
     }
-
-    let url = nextSyncUrl;
 
     while (url) {
       const response = await this.contentfulService.fetchFromContentful(url);
@@ -69,12 +43,14 @@ export class SyncService implements OnApplicationBootstrap {
       }
 
       const products = this.contentfulService.transformResponse(
-        items.newEntries,
+        items.newEntries || items,
       );
-      const deletedEntries = items.deletedEntries;
+      const deletedEntries = items.deletedEntries || [];
 
       await this.productService.upsertProducts(products);
-      await this.productService.markProductsAsDeleted(deletedEntries);
+      if (deletedEntries.length > 0) {
+        await this.productService.markProductsAsDeleted(deletedEntries);
+      }
 
       url = nextPageUrl || nextSyncUrl || null;
 
