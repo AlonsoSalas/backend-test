@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
+import { ReportsModule } from './reports/reports.module';
+import { AuthModule } from './auth/auth.module';
 import { SyncModule } from './sync/sync.module';
 import { ContentfulModule } from './contentful/contentful.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -25,9 +26,17 @@ import { ReportsModule } from './reports/reports.module';
       synchronize: true,
     }),
     ProductsModule,
+    ReportsModule,
     SyncModule,
     ContentfulModule,
-    ReportsModule,
+    SyncModule,
+    AuthModule,
   ],
+  // providers: [
+  //   {
+  //     provide: APP_GUARD,
+  //     useClass: JwtAuthGuard,
+  //   },
+  // ],
 })
 export class AppModule {}
