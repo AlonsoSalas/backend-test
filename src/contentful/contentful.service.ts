@@ -36,21 +36,6 @@ export class ContentfulService {
     }
   }
 
-  async fetchInitialSync() {
-    const response = await axios.get(this.baseUrl, {
-      params: {
-        access_token: this.accessToken,
-        initial: true,
-        type: 'Entry',
-        content_type: this.contentType,
-      },
-    });
-
-    const { nextSyncToken, items } = response.data;
-    await this.saveOrUpdateSyncUrl(nextSyncToken);
-    return items;
-  }
-
   async fetchNewEntries() {
     const syncToken = await this.getSyncUrl();
 
@@ -67,7 +52,8 @@ export class ContentfulService {
 
     const { nextSyncToken, items } = response.data;
     await this.saveOrUpdateSyncUrl(nextSyncToken);
-    return items.filter((item) => item.sys.type === 'Entry');
+
+    return items;
   }
 
   transformResponse(items: any[]): ProductDTO[] {
@@ -90,6 +76,17 @@ export class ContentfulService {
         updatedAt: new Date(item.sys.updatedAt).toISOString(),
       };
     });
+  }
+
+  extractSyncToken(nextSyncUrl: string): string | null {
+    try {
+      const url = new URL(nextSyncUrl);
+      return url.searchParams.get('sync_token');
+    } catch (error) {
+      console.error('Failed to extract sync token:', error);
+
+      return null;
+    }
   }
 
   async fetchFromContentful(url: string): Promise<any> {

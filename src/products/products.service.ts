@@ -21,7 +21,6 @@ export class ProductService {
     limit: number,
     filters: {
       name?: string;
-      category?: string;
       priceMin?: number;
       priceMax?: number;
     },
@@ -30,10 +29,6 @@ export class ProductService {
 
     if (filters.name)
       query.andWhere('product.name ILIKE :name', { name: `%${filters.name}%` });
-    if (filters.category)
-      query.andWhere('product.category = :category', {
-        category: filters.category,
-      });
     if (filters.priceMin !== undefined)
       query.andWhere('product.price >= :priceMin', {
         priceMin: filters.priceMin,
