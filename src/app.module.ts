@@ -5,6 +5,7 @@ import { ProductsModule } from './products/products.module';
 import { SyncModule } from './sync/sync.module';
 import { ContentfulModule } from './contentful/contentful.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ProductsModule,
     SyncModule,
     ContentfulModule,
+    ReportsModule,
   ],
 })
 export class AppModule {}
